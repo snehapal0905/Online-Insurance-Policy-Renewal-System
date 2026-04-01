@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Renewal Successful{% endblock %}
+{% block page_title %}Renewal Successful{% endblock %}
+
+{% block content %}
+<div style="max-width:500px;margin:40px auto;text-align:center;">
+  <div style="width:72px;height:72px;border-radius:50%;background:var(--success-light);display:flex;align-items:center;justify-content:center;margin:0 auto 18px;">
+    <svg width="36" height="36" fill="none" viewBox="0 0 24 24" stroke="#1A9F5A" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+  </div>
+  <div style="font-size:22px;font-weight:600;color:var(--text);margin-bottom:8px;">Payment Successful! 🎉</div>
+  <div style="font-size:14px;color:var(--text-2);margin-bottom:22px;">Your policy has been renewed. A confirmation will be sent to your email.</div>
+
+  <div style="background:var(--brand-light);border:1px solid #C5D8F8;border-radius:12px;padding:18px;text-align:left;margin-bottom:20px;">
+    <div style="font-size:11px;font-weight:700;color:var(--brand);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px;">Receipt Details</div>
+    <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #D9E8FC;font-size:13px;"><span style="color:var(--text-2);">Transaction ID</span><span style="font-family:monospace;">{{ txn }}</span></div>
+    <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #D9E8FC;font-size:13px;"><span style="color:var(--text-2);">Amount Paid</span><span style="font-weight:600;color:var(--success);">₹{{ "{:,.0f}".format(amt|int) }}</span></div>
+    <div style="display:flex;justify-content:space-between;padding:5px 0;font-size:13px;"><span style="color:var(--text-2);">Valid For</span><span>1 Year from today</span></div>
+  </div>
+
+  <div style="display:flex;gap:10px;justify-content:center;">
+    <a href="/policies" class="btn btn-primary">View My Policies</a>
+    <a href="/dashboard" class="btn btn-outline">Go to Dashboard</a>
+  </div>
+</div>
+{% endblock %}

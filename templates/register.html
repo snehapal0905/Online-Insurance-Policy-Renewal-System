@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><title>Register — ShieldSure</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',sans-serif;background:#F4F7FB;min-height:100vh;display:flex;align-items:center;justify-content:center;}
+.box{background:#fff;border-radius:16px;width:440px;padding:40px;box-shadow:0 8px 40px rgba(26,60,110,.12);}
+.logo-row{display:flex;align-items:center;gap:10px;margin-bottom:24px;}
+.logo-icon{width:34px;height:34px;background:#F5A623;border-radius:9px;display:flex;align-items:center;justify-content:center;}
+.logo-text{font-family:'DM Serif Display',serif;font-size:18px;color:#1A3C6E;}
+h2{font-size:20px;font-weight:600;color:#0F1C2E;margin-bottom:4px;}
+.sub{font-size:13px;color:#8892A0;margin-bottom:22px;}
+.form-group{margin-bottom:14px;}
+label{display:block;font-size:13px;font-weight:500;color:#0F1C2E;margin-bottom:4px;}
+input{width:100%;padding:9px 13px;border:1.5px solid #DDE3EE;border-radius:7px;font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:border .2s;}
+input:focus{border-color:#2356A8;}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.btn{width:100%;padding:10px;background:#2356A8;color:#fff;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:.2s;margin-top:4px;}
+.btn:hover{background:#1A3C6E;}
+.link-row{margin-top:14px;text-align:center;font-size:13px;color:#8892A0;}
+.link-row a{color:#2356A8;font-weight:500;}
+.alert{padding:10px 14px;border-radius:7px;font-size:13px;margin-bottom:14px;}
+.alert-danger{background:#FDEAEA;color:#D63939;}
+.alert-warning{background:#FFF3E0;color:#E07D10;}
+</style>
+</head>
+<body>
+<div class="box">
+  <div class="logo-row">
+    <div class="logo-icon"><svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#1A3C6E" stroke-width="2.5"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg></div>
+    <div class="logo-text">ShieldSure</div>
+  </div>
+  <h2>Create your account</h2>
+  <p class="sub">Join thousands of policyholders managing their insurance smartly</p>
+  {% with msgs = get_flashed_messages(with_categories=true) %}
+    {% for cat, msg in msgs %}<div class="alert alert-{{ cat }}">{{ msg }}</div>{% endfor %}
+  {% endwith %}
+  <form method="POST" action="/register">
+    <div class="form-group"><label>Full Name</label><input type="text" name="name" placeholder="Rahul Kumar" required></div>
+    <div class="form-group"><label>Email Address</label><input type="email" name="email" placeholder="you@example.com" required></div>
+    <div class="form-group"><label>Mobile Number</label><input type="text" name="phone" placeholder="+91 98765 43210"></div>
+    <div class="row">
+      <div class="form-group"><label>Password</label><input type="password" name="password" placeholder="Min 6 chars" required></div>
+      <div class="form-group"><label>Confirm</label><input type="password" name="confirm_password" placeholder="Repeat" required></div>
+    </div>
+    <button type="submit" class="btn">Create Account</button>
+  </form>
+  <div class="link-row">Already have an account? <a href="/login">Sign in</a></div>
+</div>
+</body>
+</html>

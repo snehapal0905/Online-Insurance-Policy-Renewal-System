@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}{{ policy.name }}{% endblock %}
+{% block page_title %}Policy Details{% endblock %}
+
+{% block content %}
+<div style="margin-bottom:14px;"><a href="/policies" style="color:var(--brand-mid);font-size:13px;">← Back to My Policies</a></div>
+
+<div style="display:grid;grid-template-columns:2fr 1fr;gap:16px;">
+  <div>
+    <div class="card" style="padding:22px;margin-bottom:16px;">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px;">
+        <div>
+          <div style="font-size:18px;font-weight:600;color:var(--text);">{{ policy.name }}</div>
+          <div style="font-size:13px;color:var(--text-3);margin-top:3px;">{{ policy.policy_number }} · {{ policy.provider }}</div>
+        </div>
+        <span class="badge badge-{{ policy.status }}" style="font-size:13px;padding:5px 12px;">{{ policy.status|title }}</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;padding-top:14px;border-top:1px solid var(--border);">
+        <div><div style="font-size:11px;color:var(--text-3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px;">Type</div><div style="font-size:14px;font-weight:500;">{{ policy.type }}</div></div>
+        <div><div style="font-size:11px;color:var(--text-3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px;">Sum Insured</div><div style="font-size:14px;font-weight:500;">₹{{ "{:,.0f}".format(policy.sum_insured) }}</div></div>
+        <div><div style="font-size:11px;color:var(--text-3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px;">Annual Premium</div><div style="font-size:14px;font-weight:500;">₹{{ "{:,.0f}".format(policy.premium) }}</div></div>
+        <div><div style="font-size:11px;color:var(--text-3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px;">Start Date</div><div style="font-size:14px;font-weight:500;">{{ policy.start_date }}</div></div>
+        <div><div style="font-size:11px;color:var(--text-3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px;">Expiry Date</div><div style="font-size:14px;font-weight:500;">{{ policy.expiry_date }}</div></div>
+        <div><div style="font-size:11px;color:var(--text-3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px;">Days Left</div>
+          <div style="font-size:14px;font-weight:500;color:{% if policy.days_left < 30 %}var(--danger){% else %}var(--success){% endif %};">
+            {% if policy.days_left < 0 %}Expired{% else %}{{ policy.days_left }} days{% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Renewal History -->
+    <div class="table-card">
+      <div class="table-toolbar"><div class="sec-title">Renewal History</div></div>
+      <table>
+        <thead><tr><th>Date</th><th>Amount</th><th>Transaction ID</th><th>Status</th></tr></thead>
+        <tbody>
+          {% for r in renewals %}
+          <tr>
+            <td>{{ r.renewal_date }}</td>
+            <td>₹{{ "{:,.0f}".format(r.amount_paid) }}</td>
+            <td style="font-family:monospace;font-size:12px;">{{ r.transaction_id or '—' }}</td>
+            <td><span class="badge badge-{{ r.status }}">{{ r.status|title }}</span></td>
+          </tr>
+          {% else %}
+          <tr><td colspan="4" style="text-align:center;padding:20px;color:var(--text-3);">No renewals recorded yet.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Sidebar Actions -->
+  <div>
+    <div class="card" style="padding:20px;margin-bottom:14px;">
+      <div style="font-size:14px;font-weight:500;margin-bottom:14px;">Actions</div>
+      {% if policy.days_left < 60 %}
+      <a href="/renew/{{ policy.id }}" class="btn btn-primary" style="width:100%;justify-content:center;margin-bottom:8px;">🔄 Renew Now</a>
+      {% endif %}
+      <button class="btn btn-outline" style="width:100%;justify-content:center;margin-bottom:8px;">📄 Download Policy PDF</button>
+      <button class="btn btn-outline" style="width:100%;justify-content:center;">📧 Email Policy Copy</button>
+    </div>
+    {% if policy.days_left < 30 %}
+    <div class="card" style="padding:16px;background:var(--danger-light);border-color:#f5b7b7;">
+      <div style="font-size:13px;font-weight:600;color:var(--danger);margin-bottom:6px;">⚠ Action Required</div>
+      <div style="font-size:12px;color:var(--danger);line-height:1.6;">
+        {% if policy.days_left < 0 %}This policy has expired. Renew immediately to restore coverage.
+        {% else %}This policy expires in {{ policy.days_left }} days. Renew now to avoid a coverage gap.{% endif %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

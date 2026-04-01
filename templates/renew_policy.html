@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+{% block title %}Renew — {{ policy.name }}{% endblock %}
+{% block page_title %}Renew Policy{% endblock %}
+
+{% block extra_style %}
+.stepper{display:flex;align-items:center;margin-bottom:26px;}
+.step{display:flex;align-items:center;gap:7px;flex:1;}
+.step-num{width:26px;height:26px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:var(--text-3);flex-shrink:0;transition:all .3s;}
+.step.done .step-num{background:var(--success);border-color:var(--success);color:#fff;}
+.step.active .step-num{background:var(--brand-mid);border-color:var(--brand-mid);color:#fff;}
+.step-lbl{font-size:12px;color:var(--text-3);}
+.step.active .step-lbl{color:var(--brand-mid);font-weight:500;}
+.step.done .step-lbl{color:var(--success);}
+.step-line{flex:1;height:2px;background:var(--border);margin:0 6px;transition:background .3s;}
+.step-line.done{background:var(--success);}
+.sum-box{background:var(--brand-light);border:1px solid #C5D8F8;border-radius:10px;padding:16px;margin-bottom:16px;}
+.sum-row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #D9E8FC;font-size:13px;}
+.sum-row:last-child{border-bottom:none;padding-top:10px;font-size:15px;font-weight:600;color:var(--brand);}
+.sum-row .sk{color:var(--text-2);}
+.form-group{margin-bottom:14px;}
+.form-label{display:block;font-size:13px;font-weight:500;color:var(--text);margin-bottom:5px;}
+.form-input{width:100%;padding:9px 13px;border:1.5px solid var(--border);border-radius:7px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);outline:none;transition:border .2s;}
+.form-input:focus{border-color:var(--brand-mid);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.addon-row{display:flex;align-items:center;justify-content:space-between;background:var(--bg);border-radius:8px;padding:12px 14px;margin-bottom:8px;border:1.5px solid transparent;transition:border .2s;cursor:pointer;}
+.addon-row:has(input:checked){border-color:var(--brand-mid);background:var(--brand-light);}
+.pay-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:14px;}
+.pay-opt{border:2px solid var(--border);border-radius:9px;padding:11px;text-align:center;cursor:pointer;transition:all .2s;font-size:12px;font-weight:500;color:var(--text-2);}
+.pay-opt.sel{border-color:var(--brand-mid);background:var(--brand-light);color:var(--brand);}
+.pay-opt .pm{font-size:20px;margin-bottom:4px;}
+.step-panel{display:none;}.step-panel.active{display:block;}
+.success-circle{width:64px;height:64px;border-radius:50%;background:var(--success-light);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;}
+{% endblock %}
+
+{% block content %}
+<div style="max-width:580px;margin:0 auto;">
+  <div style="margin-bottom:16px;"><a href="/renew" style="color:var(--brand-mid);font-size:13px;">← Back to Renewal List</a></div>
+
+  <div class="card" style="padding:24px;">
+    <!-- STEPPER -->
+    <div class="stepper" id="stepper">
+      <div class="step active" id="s1"><div class="step-num">1</div><div class="step-lbl">Verify</div></div>
+      <div class="step-line" id="l1"></div>
+      <div class="step" id="s2"><div class="step-num">2</div><div class="step-lbl">Add-ons</div></div>
+      <div class="step-line" id="l2"></div>
+      <div class="step" id="s3"><div class="step-num">3</div><div class="step-lbl">Pay</div></div>
+      <div class="step-line" id="l3"></div>
+      <div class="step" id="s4"><div class="step-num">4</div><div class="step-lbl">Done</div></div>
+    </div>
+
+    <!-- STEP 1 — Verify -->
+    <div class="step-panel active" id="p1">
+      <div class="sum-box">
+        <div style="font-size:11px;font-weight:700;color:var(--brand);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;">Policy Details</div>
+        <div class="sum-row"><span class="sk">Policy ID</span><span>{{ policy.policy_number }}</span></div>
+        <div class="sum-row"><span class="sk">Policy Name</span><span>{{ policy.name }}</span></div>
+        <div class="sum-row"><span class="sk">Provider</span><span>{{ policy.provider }}</span></div>
+        <div class="sum-row"><span class="sk">Sum Insured</span><span>₹{{ "{:,.0f}".format(policy.sum_insured) }}</span></div>
+        <div class="sum-row"><span class="sk">Base Premium</span><span>₹{{ "{:,.0f}".format(policy.premium * 0.9) }}</span></div>
+        <div class="sum-row"><span class="sk">GST (18%)</span><span>₹{{ "{:,.0f}".format(policy.premium * 0.1) }}</span></div>
+        <div class="sum-row"><span>Total Payable</span><span>₹{{ "{:,.0f}".format(policy.premium) }}</span></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Holder Name</label><input class="form-input" type="text" value="{{ session.user_name }}" readonly></div>
+        <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" value="{{ session.user_email }}" readonly></div>
+      </div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="goStep(2)">Continue →</button>
+    </div>
+
+    <!-- STEP 2 — Add-ons -->
+    <div class="step-panel" id="p2">
+      <p style="font-size:13px;color:var(--text-2);margin-bottom:14px;">Select optional add-ons to enhance your coverage:</p>
+      <label class="addon-row">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <input type="checkbox" id="addon1" style="width:15px;height:15px;accent-color:var(--brand-mid)" onchange="calcTotal()">
+          <div><div style="font-size:13px;font-weight:500;">Zero Depreciation</div><div style="font-size:11px;color:var(--text-3)">Full claim without depreciation deduction</div></div>
+        </div>
+        <span style="font-size:13px;font-weight:600;color:var(--brand-mid);">+₹1,200</span>
+      </label>
+      <label class="addon-row">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <input type="checkbox" id="addon2" style="width:15px;height:15px;accent-color:var(--brand-mid)" onchange="calcTotal()">
+          <div><div style="font-size:13px;font-weight:500;">Roadside Assistance 24×7</div><div style="font-size:11px;color:var(--text-3)">Towing, fuel delivery, key service</div></div>
+        </div>
+        <span style="font-size:13px;font-weight:600;color:var(--brand-mid);">+₹350</span>
+      </label>
+      <label class="addon-row">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <input type="checkbox" id="addon3" style="width:15px;height:15px;accent-color:var(--brand-mid)" onchange="calcTotal()">
+          <div><div style="font-size:13px;font-weight:500;">Engine Protection</div><div style="font-size:11px;color:var(--text-3)">Covers hydrostatic lock, oil leakage</div></div>
+        </div>
+        <span style="font-size:13px;font-weight:600;color:var(--brand-mid);">+₹600</span>
+      </label>
+      <div style="background:var(--bg);border-radius:8px;padding:12px 14px;margin-top:14px;display:flex;justify-content:space-between;font-size:14px;">
+        <span style="color:var(--text-2);">Updated Total</span>
+        <span style="font-weight:700;color:var(--brand);" id="totalAmt">₹{{ "{:,.0f}".format(policy.premium) }}</span>
+      </div>
+      <div style="display:flex;gap:9px;margin-top:16px;">
+        <button class="btn btn-outline" style="flex:1;justify-content:center;" onclick="goStep(1)">← Back</button>
+        <button class="btn btn-primary" style="flex:2;justify-content:center;" onclick="goStep(3)">Continue →</button>
+      </div>
+    </div>
+
+    <!-- STEP 3 — Pay -->
+    <div class="step-panel" id="p3">
+      <div class="sum-box" style="margin-bottom:14px;">
+        <div class="sum-row"><span class="sk">Base Premium</span><span>₹{{ "{:,.0f}".format(policy.premium) }}</span></div>
+        <div class="sum-row"><span>Total Payable</span><span id="finalAmt">₹{{ "{:,.0f}".format(policy.premium) }}</span></div>
+      </div>
+      <p style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:10px;">Select Payment Method</p>
+      <div class="pay-grid">
+        <div class="pay-opt sel" onclick="selPay(this,'UPI')"><div class="pm">📱</div>UPI</div>
+        <div class="pay-opt" onclick="selPay(this,'Card')"><div class="pm">💳</div>Card</div>
+        <div class="pay-opt" onclick="selPay(this,'Net Banking')"><div class="pm">🏦</div>Net Banking</div>
+      </div>
+      <form method="POST" action="/renew/{{ policy.id }}" id="payForm">
+        <input type="hidden" name="step" value="3">
+        <input type="hidden" name="payment_method" id="payMethod" value="UPI">
+        <input type="hidden" name="addon_total" id="addonTotal" value="0">
+        <div class="form-group"><label class="form-label">UPI ID</label><input class="form-input" type="text" name="upi_id" placeholder="yourname@upi"></div>
+        <div style="display:flex;align-items:center;gap:8px;padding:9px 13px;background:var(--success-light);border-radius:7px;font-size:12px;color:var(--success);margin-bottom:14px;">
+          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+          Secured by 256-bit SSL encryption
+        </div>
+        <div style="display:flex;gap:9px;">
+          <button type="button" class="btn btn-outline" style="flex:1;justify-content:center;" onclick="goStep(2)">← Back</button>
+          <button type="submit" class="btn btn-accent" style="flex:2;justify-content:center;">💳 Pay <span id="btnAmt">₹{{ "{:,.0f}".format(policy.premium) }}</span></button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% block scripts %}
+<script>
+const BASE = {{ policy.premium }};
+const ADDONS = {addon1: 1200, addon2: 350, addon3: 600};
+let addonTotal = 0;
+let currentStep = 1;
+
+function goStep(n) {
+  document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('p' + n).classList.add('active');
+  for (let i = 1; i <= 4; i++) {
+    const s = document.getElementById('s' + i);
+    s.className = 'step' + (i < n ? ' done' : (i === n ? ' active' : ''));
+    if (i < 4) {
+      const l = document.getElementById('l' + i);
+      l.className = 'step-line' + (i < n ? ' done' : '');
+    }
+  }
+  currentStep = n;
+}
+
+function calcTotal() {
+  addonTotal = 0;
+  Object.keys(ADDONS).forEach(id => {
+    if (document.getElementById(id).checked) addonTotal += ADDONS[id];
+  });
+  const total = BASE + addonTotal;
+  const fmt = '₹' + total.toLocaleString('en-IN');
+  document.getElementById('totalAmt').textContent = fmt;
+  document.getElementById('finalAmt').textContent = fmt;
+  document.getElementById('btnAmt').textContent = fmt;
+  document.getElementById('addonTotal').value = addonTotal;
+}
+
+function selPay(el, method) {
+  document.querySelectorAll('.pay-opt').forEach(p => p.classList.remove('sel'));
+  el.classList.add('sel');
+  document.getElementById('payMethod').value = method;
+}
+</script>
+{% endblock %}
+{% endblock %}

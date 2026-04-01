@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Renew Policy{% endblock %}
+{% block page_title %}Renew Policy{% endblock %}
+
+{% block content %}
+<div class="card" style="padding:18px;background:linear-gradient(135deg,#1A3C6E,#2356A8);margin-bottom:20px;">
+  <div style="display:inline-block;background:#F5A623;color:#1A3C6E;font-size:10px;font-weight:700;padding:2px 9px;border-radius:20px;letter-spacing:.5px;margin-bottom:8px;">✦ AI SMART RENEWAL</div>
+  <div style="color:#fff;font-size:15px;font-weight:500;">Select a policy to renew below. Our AI has prioritised them by urgency.</div>
+</div>
+
+<div class="table-card">
+  <div class="table-toolbar"><div class="sec-title">Policies Available for Renewal</div></div>
+  <table>
+    <thead>
+      <tr><th>Policy Number</th><th>Name</th><th>Type</th><th>Premium</th><th>Expiry</th><th>Days Left</th><th>Action</th></tr>
+    </thead>
+    <tbody>
+      {% for p in policies %}
+      {% set days = p.days_left %}
+      <tr>
+        <td class="td-link">{{ p.policy_number }}</td>
+        <td>{{ p.name }}</td>
+        <td>{{ p.type }}</td>
+        <td>₹{{ "{:,.0f}".format(p.premium) }}</td>
+        <td>{{ p.expiry_date }}</td>
+        <td>
+          {% if days < 0 %}<span style="color:var(--danger);font-weight:600;">Expired</span>
+          {% elif days < 15 %}<span style="color:var(--danger);font-weight:600;">{{ days }} days ⚠</span>
+          {% elif days < 60 %}<span style="color:var(--warning);font-weight:500;">{{ days }} days</span>
+          {% else %}<span style="color:var(--success);">{{ days }} days</span>{% endif %}
+        </td>
+        <td>
+          {% if days < 60 or p.status == 'expired' %}
+          <a href="/renew/{{ p.id }}" class="btn btn-primary btn-sm">Renew Now</a>
+          {% else %}
+          <a href="/renew/{{ p.id }}" class="btn btn-outline btn-sm">Early Renew</a>
+          {% endif %}
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="7" style="text-align:center;padding:24px;color:var(--text-3);">No policies to renew.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

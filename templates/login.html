@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Login — ShieldSure</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',sans-serif;background:#F4F7FB;min-height:100vh;display:flex;align-items:center;justify-content:center;}
+.wrap{display:flex;width:100%;max-width:900px;min-height:520px;border-radius:20px;overflow:hidden;box-shadow:0 20px 60px rgba(26,60,110,.15);}
+.left{background:linear-gradient(140deg,#1A3C6E 0%,#2356A8 100%);flex:1;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;padding:50px 44px;position:relative;overflow:hidden;}
+.left::after{content:'';position:absolute;right:-60px;bottom:-60px;width:260px;height:260px;border-radius:50%;background:rgba(255,255,255,.05);}
+.left::before{content:'';position:absolute;left:-40px;top:-40px;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,.04);}
+.logo-icon{width:44px;height:44px;background:#F5A623;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;}
+.left h1{font-family:'DM Serif Display',serif;color:#fff;font-size:30px;line-height:1.25;margin-bottom:12px;}
+.left p{color:rgba(255,255,255,.7);font-size:14px;line-height:1.7;max-width:280px;}
+.features{margin-top:28px;display:flex;flex-direction:column;gap:10px;}
+.feat{display:flex;align-items:center;gap:10px;color:rgba(255,255,255,.8);font-size:13px;}
+.feat-dot{width:7px;height:7px;background:#F5A623;border-radius:50%;flex-shrink:0;}
+.right{background:#fff;width:380px;display:flex;flex-direction:column;justify-content:center;padding:44px 40px;}
+.right h2{font-size:22px;font-weight:600;color:#0F1C2E;margin-bottom:6px;}
+.right p.sub{font-size:13px;color:#8892A0;margin-bottom:28px;}
+.form-group{margin-bottom:16px;}
+label{display:block;font-size:13px;font-weight:500;color:#0F1C2E;margin-bottom:5px;}
+input{width:100%;padding:10px 14px;border:1.5px solid #DDE3EE;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:border .2s;}
+input:focus{border-color:#2356A8;}
+.btn{width:100%;padding:11px;background:#2356A8;color:#fff;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;cursor:pointer;transition:.2s;margin-top:4px;}
+.btn:hover{background:#1A3C6E;}
+.link-row{margin-top:16px;text-align:center;font-size:13px;color:#8892A0;}
+.link-row a{color:#2356A8;font-weight:500;}
+.alert{padding:10px 14px;border-radius:7px;font-size:13px;margin-bottom:16px;}
+.alert-danger{background:#FDEAEA;color:#D63939;border:1px solid #f5b7b7;}
+.alert-success{background:#E6F7EE;color:#1A9F5A;border:1px solid #aee8c8;}
+.alert-info{background:#EEF4FF;color:#2356A8;border:1px solid #b8d4f5;}
+.demo-box{background:#F4F7FB;border-radius:8px;padding:12px 14px;margin-top:20px;font-size:12px;color:#4A5568;}
+.demo-box strong{color:#0F1C2E;display:block;margin-bottom:5px;}
+.demo-row{display:flex;justify-content:space-between;padding:2px 0;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="left">
+    <div class="logo-icon">
+      <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#1A3C6E" stroke-width="2.5"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+    </div>
+    <h1>Renew smarter.<br>Stay protected.</h1>
+    <p>India's intelligent insurance renewal portal — powered by AI, built for peace of mind.</p>
+    <div class="features">
+      <div class="feat"><div class="feat-dot"></div>AI-powered renewal reminders</div>
+      <div class="feat"><div class="feat-dot"></div>One-click payment simulation</div>
+      <div class="feat"><div class="feat-dot"></div>Multi-policy management</div>
+      <div class="feat"><div class="feat-dot"></div>Real-time analytics dashboard</div>
+    </div>
+  </div>
+  <div class="right">
+    <h2>Welcome back</h2>
+    <p class="sub">Sign in to manage your insurance policies</p>
+    {% with msgs = get_flashed_messages(with_categories=true) %}
+      {% for cat, msg in msgs %}<div class="alert alert-{{ cat }}">{{ msg }}</div>{% endfor %}
+    {% endwith %}
+    <form method="POST" action="/login">
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" name="email" placeholder="you@example.com" required>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" name="password" placeholder="Enter password" required>
+      </div>
+      <button type="submit" class="btn">Sign In</button>
+    </form>
+    <div class="link-row">Don't have an account? <a href="/register">Register free</a></div>
+    <div class="demo-box">
+      <strong>Demo Credentials</strong>
+      <div class="demo-row"><span>Customer:</span><span>rahul@example.com / user123</span></div>
+      <div class="demo-row"><span>Admin:</span><span>admin@shieldsure.com / admin123</span></div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
